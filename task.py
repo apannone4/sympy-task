@@ -210,7 +210,7 @@ def main():
     print("Sub-task 1:", calcola_derivata("x**3 + 2*x", "x"))
     print("Sub-task 2:", calcola_integrale_definito("x**2", "x", 0, 3))
     print("Sub-task 3:", calcola_limite("sin(x)/x", "x", "0"))
-    print("Sub-task 4:", calcola_polinomio_taylor("exp(x)", "x", 0.0, 4))
+    print("Sub-task 4:", calcola_polinomio_taylor("exp(x)", "x", 0, 4))
     print("Sub-task 5:", risolvi_sistema_lineare("x + y - 3", "x - y - 1", "x", "y"))
 
 if __name__ == "__main__":
