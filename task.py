@@ -175,8 +175,34 @@ if __name__ == "__main__":
 
     pass
 
-def risolvi_sistema_lineare(eq1: str, eq2: str, var1: str, var2: str) -> Dict[sympy.Symbol, sympy.Expr]:
-    """Sub-task 5: Risolvere un Sistema Lineare."""
+
+    def calcola_taylor(espressione: str, variabile: str, punto: float, ordine: int) -> sp.Expr:
+        if not isinstance(variabile, str) or not variabile:
+            raise ValueError("Variabile non valida.")
+
+        var_symbol = sp.Symbol(variabile)
+        expr = _parse_expression_cached(espressione, (variabile,))
+
+        try:
+            serie = sp.series(expr, var_symbol, punto, ordine + 1).removeO()
+        except Exception as exc:
+            raise ValueError(f"Errore nel calcolo del polinomio di Taylor: {exc}")
+
+        return sp.simplify(serie)
+
+
+    def main():
+        espressione = input("Inserisci l'espressione: ")
+        variabile = input("Inserisci la variabile: ")
+        punto = float(input("Inserisci il punto di sviluppo: "))
+        ordine = int(input("Inserisci l'ordine del polinomio: "))
+
+        risultato = calcola_taylor(espressione, variabile, punto, ordine)
+        print("Polinomio di Taylor:", risultato)
+
+
+    if __name__ == "__main__":
+        main()
 
     pass
 
