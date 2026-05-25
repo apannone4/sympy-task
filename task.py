@@ -3,9 +3,60 @@ from typing import Dict
 
 # Controlla il file readme.md per i dettagli su ciascun sub-task
 
-def calcola_derivata(espressione: str, variabile: str) -> sympy.Expr:
-    """Sub-task 1: Calcolare una Derivata."""
-    pass
+
+import sympy as sp
+from functools import lru_cache
+from sympy.parsing.sympy_parser import (
+    parse_expr,
+    standard_transformations,
+    implicit_multiplication_application,
+    convert_xor,
+)
+
+_TRANSFORMATIONS = standard_transformations + (
+    implicit_multiplication_application,
+    convert_xor,
+)
+
+@lru_cache(maxsize=256)
+def _parse_expression_cached(expr_str: str, variable_names: tuple) -> sp.Expr:
+    if not isinstance(expr_str, str):
+        raise ValueError("L'espressione deve essere una stringa.")
+
+    expr_norm = expr_str.replace("^", "**")
+    local_dict = {name: sp.Symbol(name) for name in variable_names}
+
+    try:
+        expr = parse_expr(
+            expr_norm,
+            local_dict=local_dict,
+            transformations=_TRANSFORMATIONS,
+            evaluate=True
+        )
+        return sp.simplify(expr)
+
+    except Exception as exc:
+        raise ValueError(f"Errore parsing: {exc}")
+
+def calcola_derivata(espressione: str, variabile: str) -> sp.Expr:
+    if not isinstance(variabile, str) or not variabile:
+        raise ValueError("Variabile non valida.")
+
+    var_symbol = sp.Symbol(variabile)
+    expr = _parse_expression_cached(espressione, (variabile,))
+    derivata = sp.diff(expr, var_symbol)
+
+    return sp.simplify(derivata)
+
+def main():
+    espressione = input("Inserisci l'espressione: ")
+    variabile = input("Inserisci la variabile: ")
+    risultato = calcola_derivata(espressione, variabile)
+    print("Derivata:", risultato)
+
+if __name__ == "__main__":
+    main()
+pass
 
 def calcola_integrale_definito(espressione: str, variabile: str, estremo_inf: float, estremo_sup: float) -> sympy.Expr:
     """Sub-task 2: Calcolare un Integrale Definito."""
@@ -21,6 +72,7 @@ def calcola_polinomio_taylor(espressione: str, variabile: str, punto: float, ord
 
 def risolvi_sistema_lineare(eq1: str, eq2: str, var1: str, var2: str) -> Dict[sympy.Symbol, sympy.Expr]:
     """Sub-task 5: Risolvere un Sistema Lineare."""
+
     pass
 
 def main():
